@@ -3,7 +3,6 @@ package consulacl
 import (
 	"crypto/sha256"
 	"fmt"
-	"log"
 	"reflect"
 	"sort"
 	"strings"
@@ -42,7 +41,6 @@ func resourceConsulACLToken() *schema.Resource {
 		Update: resourceConsulACLTokenUpdate,
 		Read:   resourceConsulACLTokenRead,
 		Delete: resourceConsulACLTokenDelete,
-		Exists: resourceConsulACLTokenExists,
 
 		Importer: &schema.ResourceImporter{
 			State: func(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
@@ -191,23 +189,6 @@ func resourceConsulACLTokenRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set(FieldRule, sortRules(rules))
 
 	return nil
-}
-
-func resourceConsulACLTokenExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*consul.Client)
-
-	_, resp, err := client.ACL().Info(d.Get(FieldToken).(string), nil)
-	if err != nil {
-		if resp != nil {
-			log.Printf("[WARN] Token %s not found", d.Get(FieldName).(string))
-			d.SetId("")
-			return false, nil
-		}
-		return false, fmt.Errorf("Error retrieving ACL %s", d.Get(FieldName).(string))
-	}
-
-	return true, nil
-
 }
 
 func resourceConsulACLTokenUpdate(d *schema.ResourceData, meta interface{}) error {
