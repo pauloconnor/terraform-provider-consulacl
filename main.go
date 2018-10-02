@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/ashald/terraform-provider-consulacl/consulacl"
 	"github.com/hashicorp/terraform/plugin"
+	"github.com/pauloconnor/terraform-provider-consulacl/consulacl"
 )
 
 func main() {
